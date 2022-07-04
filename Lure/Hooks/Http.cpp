@@ -192,17 +192,18 @@ bool __fastcall Http__trustCheck_hook(const char* url)
 
     if (std::find(Helpers::allowedSchemes.begin(), Helpers::allowedSchemes.end(), std::string(scheme)) != Helpers::allowedSchemes.end())
     {
+        std::string _host = std::string(host);
+        
         // this is crude and inefficient but I don't care
-        for (const std::string& end : Helpers::allowedWildcardDomains)
+        for (std::string wildcard : Helpers::allowedWildcardDomains)
         {
-            std::string start = std::string(host);
-            if (start.size() >= end.size() && 0 == end.compare(start.size() - end.size(), end.size(), end))
+            if (_host.size() >= wildcard.size() && 0 == wildcard.compare(_host.size() - wildcard.size(), wildcard.size(), wildcard))
             {
                 return true;
             }
         }
 
-        return std::find(Helpers::allowedDomains.begin(), Helpers::allowedDomains.end(), std::string(host)) != Helpers::allowedDomains.end();
+        return std::find(Helpers::allowedDomains.begin(), Helpers::allowedDomains.end(), _host) != Helpers::allowedDomains.end();
     }
 
     return false;
